@@ -88,7 +88,7 @@ function getWeatherDescription(weathercode) {
         case 57: return "Freezing Drizzle: light and dense intensity";
         case 61:
         case 63:
-        case 65: return "Rain: slight, moderate and heavy intensity";
+        case 65: return "Rain: slight, moderate, and heavy intensity";
         case 66:
         case 67: return "Freezing Rain: light and heavy intensity";
         case 71:
@@ -107,36 +107,84 @@ function getWeatherDescription(weathercode) {
     }
 }
 
-// Helper function to map weather codes to icon URLs (simplified)
-// Using a generic set of icons for now. A more comprehensive mapping might be needed.
-// This mapping is illustrative and may need adjustment based on actual icon availability.
+// Helper function to map weather codes to icon URLs using Meteocons SVG icons via CDN.
+// Style chosen: 'fill'. Version: '1.0.0'.
+// Mapping WMO weather codes to Meteocons icon names.
+// See: https://github.com/basmilius/meteocons for icon list and https://open-meteo.com/en/docs for WMO codes.
 function getWeatherIconUrl(weathercode) {
-    // Placeholder icons, these URLs might not be directly usable or might need hosting.
-    // For a real app, you'd likely use a library of weather icons or a service like open-meteo.com's own icons if available.
-    // For demonstration, I'll use generic descriptions.
+    let iconName = 'cloudy'; // Default to cloudy if unknown
+    const meteoconsBaseUrl = 'https://cdn.meteocons.com/1.0.0/svg/fill/';
+
     switch (weathercode) {
-        case 0: return "/icons/clear_day.png"; // Placeholder
-        case 1:
-        case 2:
-        case 3: return "/icons/partly_cloudy_day.png"; // Placeholder
-        case 51:
-        case 53:
-        case 55: return "/icons/rain.png"; // Placeholder
-        case 61:
-        case 63:
-        case 65:
-        case 80:
-        case 81:
-        case 82: return "/icons/rain.png"; // Placeholder
-        case 71:
-        case 73:
-        case 75:
-        case 77: return "/icons/snow.png"; // Placeholder
-        case 95:
-        case 96:
-        case 99: return "/icons/thunderstorm.png"; // Placeholder
-        default: return "/icons/unknown.png"; // Placeholder
+        // Clear sky
+        case 0:
+            iconName = 'clear-day';
+            break;
+        // Mainly clear, partly cloudy, and overcast
+        case 1: // Mainly clear
+            iconName = 'partly-cloudy-day';
+            break;
+        case 2: // Partly cloudy
+            iconName = 'partly-cloudy-day'; // Using partly-cloudy for consistency
+            break;
+        case 3: // Overcast
+            iconName = 'cloudy';
+            break;
+        // Fog
+        case 45:
+        case 48:
+            iconName = 'fog';
+            break;
+        // Drizzle
+        case 51: // light intensity
+        case 53: // moderate intensity
+        case 55: // dense intensity
+            iconName = 'drizzle';
+            break;
+        // Freezing Drizzle
+        case 56: // light intensity
+        case 57: // dense intensity
+            iconName = 'freezing-rain'; // Mapping to freezing-rain as a close alternative
+            break;
+        // Rain
+        case 61: // slight
+        case 63: // moderate
+        case 65: // heavy
+        // Showers
+        case 80: // slight
+        case 81: // moderate
+        case 82: // violent
+            iconName = 'rain';
+            break;
+        // Freezing Rain
+        case 66: // light
+        case 67: // heavy
+            iconName = 'freezing-rain';
+            break;
+        // Snow fall
+        case 71: // slight
+        case 73: // moderate
+        case 75: // heavy
+        // Snow grains
+        case 77:
+            iconName = 'snow';
+            break;
+        // Snow showers
+        case 85: // slight
+        case 86: // heavy
+            iconName = 'snow'; // Fallback to 'snow' for snow showers as 'snow-showers' might not be a standard Meteocons name.
+            break;
+        // Thunderstorm
+        case 95: // slight or moderate
+        case 96: // thunderstorm with slight hail
+        case 99: // thunderstorm with heavy hail
+            iconName = 'thunderstorm';
+            break;
+        default:
+            iconName = 'unknown'; // Fallback for unknown codes
     }
+
+    return `${meteoconsBaseUrl}${iconName}.svg`;
 }
 
 // Fetch weather data on page load
