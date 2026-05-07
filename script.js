@@ -112,79 +112,41 @@ function getWeatherDescription(weathercode) {
 // Mapping WMO weather codes to Meteocons icon names.
 // See: https://github.com/basmilius/meteocons for icon list and https://open-meteo.com/en/docs for WMO codes.
 function getWeatherIconUrl(weathercode) {
-    let iconName = 'cloudy'; // Default to cloudy if unknown
-    const meteoconsBaseUrl = 'https://cdn.meteocons.com/1.0.0/svg/fill/';
+    let iconName = 'cloud'; // Default
 
     switch (weathercode) {
-        // Clear sky
-        case 0:
-            iconName = 'clear-day';
-            break;
-        // Mainly clear, partly cloudy, and overcast
-        case 1: // Mainly clear
-            iconName = 'partly-cloudy-day';
-            break;
-        case 2: // Partly cloudy
-            iconName = 'partly-cloudy-day'; // Using partly-cloudy for consistency
-            break;
-        case 3: // Overcast
-            iconName = 'cloudy';
-            break;
-        // Fog
+        case 0: iconName = 'sun'; break;
+        case 1:
+        case 2: iconName = 'cloud-sun'; break;
+        case 3: iconName = 'cloud'; break;
         case 45:
-        case 48:
-            iconName = 'fog';
-            break;
-        // Drizzle
-        case 51: // light intensity
-        case 53: // moderate intensity
-        case 55: // dense intensity
-            iconName = 'drizzle';
-            break;
-        // Freezing Drizzle
-        case 56: // light intensity
-        case 57: // dense intensity
-            iconName = 'freezing-rain'; // Mapping to freezing-rain as a close alternative
-            break;
-        // Rain
-        case 61: // slight
-        case 63: // moderate
-        case 65: // heavy
-        // Showers
-        case 80: // slight
-        case 81: // moderate
-        case 82: // violent
-            iconName = 'rain';
-            break;
-        // Freezing Rain
-        case 66: // light
-        case 67: // heavy
-            iconName = 'freezing-rain';
-            break;
-        // Snow fall
-        case 71: // slight
-        case 73: // moderate
-        case 75: // heavy
-        // Snow grains
-        case 77:
-            iconName = 'snow';
-            break;
-        // Snow showers
-        case 85: // slight
-        case 86: // heavy
-            iconName = 'snow'; // Fallback to 'snow' for snow showers as 'snow-showers' might not be a standard Meteocons name.
-            break;
-        // Thunderstorm
-        case 95: // slight or moderate
-        case 96: // thunderstorm with slight hail
-        case 99: // thunderstorm with heavy hail
-            iconName = 'thunderstorm';
-            break;
-        default:
-            iconName = 'unknown'; // Fallback for unknown codes
+        case 48: iconName = 'wind'; break;
+        case 51:
+        case 53:
+        case 55:
+        case 56:
+        case 57: iconName = 'cloud-drizzle'; break;
+        case 61:
+        case 63:
+        case 65:
+        case 66:
+        case 67:
+        case 80:
+        case 81:
+        case 82: iconName = 'cloud-rain'; break;
+        case 71:
+        case 73:
+        case 75:
+        case 85:
+        case 86: iconName = 'cloud-snow'; break;
+        case 77: iconName = 'snowflake'; break;
+        case 95:
+        case 96:
+        case 99: iconName = 'cloud-lightning'; break;
+        default: iconName = 'cloud';
     }
 
-    return `${meteoconsBaseUrl}${iconName}.svg`;
+    return `https://unpkg.com/lucide-static@latest/icons/${iconName}.svg`;
 }
 
 // Fetch weather data on page load
