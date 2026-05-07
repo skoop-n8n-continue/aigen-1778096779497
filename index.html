@@ -2,11 +2,8 @@
 <html lang="en">
 <head>
   <link rel="manifest" href="./manifest.json">
-  <!-- skoop-live-prescript -->
-  <!-- skoop-live-runtime -->
   <script src="./skoop-live.js"></script>
   <script>
-  // Skoop live-preview fetch shim — only active when dirty data is injected
   (function () {
     if (typeof window === 'undefined' || !window.__skoop_dirty_data__) return;
     var dirty = window.__skoop_dirty_data__;
@@ -14,7 +11,6 @@
     window.fetch = function (input, init) {
       try {
         var url = typeof input === 'string' ? input : (input && input.url) || '';
-        // Match bare 'data.json', './data.json', or any URL ending /data.json (with or without query)
         if (/(^|\/)data\.json(\?.*)?$/.test(url) || url === 'data.json') {
           var body = JSON.stringify(dirty);
           return Promise.resolve(new Response(body, {
@@ -29,36 +25,88 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lahore Weather</title>
+    <title>Lahore Weather Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="weather-container">
-        <h1 id="city-name">Lahore, Pakistan</h1>
-        <div class="current-weather">
-            <img id="weather-icon" src="" alt="Weather Icon">
-            <div class="temperature">
-                <span id="current-temp">--</span>°C
+<body class="dark-mode">
+    <div class="dashboard">
+        <!-- Left Column: Weather Information -->
+        <div class="weather-container">
+            <div class="header">
+                <h1 id="city-name">Lahore, Pakistan</h1>
+                <div id="live-clock">--:-- --</div>
             </div>
-            <div class="description" id="weather-desc">--</div>
+
+            <div class="current-weather">
+                <img id="weather-icon" src="https://unpkg.com/lucide-static@latest/icons/cloud.svg" alt="Weather Icon">
+                <div class="temperature">
+                    <span id="current-temp">--</span><span id="temp-unit-label">°C</span>
+                </div>
+                <div class="description" id="weather-desc">--</div>
+                <div class="wind" id="current-wind">Wind: -- km/h</div>
+            </div>
+
+            <div class="forecast">
+                <h2>Weather Forecast</h2>
+                <div id="forecast-list">
+                    <!-- Forecast items will be populated here -->
+                </div>
+            </div>
         </div>
-        <div class="forecast">
-            <h2>Weather Forecast</h2>
-            <div id="forecast-list">
-                <!-- Forecast items will be populated here -->
+
+        <!-- Right Column: Settings Panel -->
+        <div class="settings-panel">
+            <h2>Settings</h2>
+
+            <div class="setting-group">
+                <label>Temperature</label>
+                <div class="toggle-group" id="temp-toggle">
+                    <button class="toggle-btn active" data-val="C">°C</button>
+                    <button class="toggle-btn" data-val="F">°F</button>
+                </div>
             </div>
+
+            <div class="setting-group">
+                <label>Forecast Days</label>
+                <div class="toggle-group" id="days-toggle">
+                    <button class="toggle-btn" data-val="3">3</button>
+                    <button class="toggle-btn active" data-val="5">5</button>
+                    <button class="toggle-btn" data-val="7">7</button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label>Theme</label>
+                <div class="toggle-group" id="theme-toggle">
+                    <button class="toggle-btn active" data-val="dark">Dark</button>
+                    <button class="toggle-btn" data-val="light">Light</button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label>Wind Speed</label>
+                <div class="toggle-group" id="wind-toggle">
+                    <button class="toggle-btn active" data-val="kmh">km/h</button>
+                    <button class="toggle-btn" data-val="mph">mph</button>
+                </div>
+            </div>
+
+            <button id="refresh-btn" class="refresh-btn">
+                <img src="https://unpkg.com/lucide-static@latest/icons/refresh-cw.svg" alt="Refresh">
+                Refresh Weather
+            </button>
         </div>
     </div>
 
     <script src="script.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js')
-          .then(function (reg) { console.log('[PWA] SW registered:', reg.scope); })
-          .catch(function (err) { console.warn('[PWA] SW registration failed:', err); });
-      });
-    }
-  </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('./sw.js')
+            .then(function (reg) { console.log('[PWA] SW registered:', reg.scope); })
+            .catch(function (err) { console.warn('[PWA] SW registration failed:', err); });
+        });
+      }
+    </script>
 </body>
 </html>
